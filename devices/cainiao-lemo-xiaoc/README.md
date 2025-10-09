@@ -36,7 +36,7 @@ eMMC短接点
 
 如何使用u-boot.bin制作FIP参考[此处](../cainiao-cniot-core/README.md)，需要的一些FIP blobs在[此处](https://github.com/retro98boy/amlogic-fip-blobs)下载
 
-本仓库的Releases界面有制作好的FIP，.bin文件用于直接刻录，.burn.img用于Amlogic USB Burning Tool线刷
+本仓库的[Releases界面](https://github.com/retro98boy/amlogic-devices/releases/tag/cainiao-lemo-xiaoc)有制作好的FIP，.bin文件用于直接刻录，.burn.img用于Amlogic USB Burning Tool线刷
 
 # 主线内核
 
