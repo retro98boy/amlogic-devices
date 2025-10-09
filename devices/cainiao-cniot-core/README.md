@@ -321,7 +321,7 @@ Amlogic USB Burning Tool使用专有的固件格式，虽然固件扩展名为.i
 
 ## 写入主线U-Boot
 
-仓库的Releases界面有制作好的FIP，.bin文件用于直接刻录，.burn.img用于Amlogic USB Burning Tool线刷。该U-Boot使能了主机侧边的USB触点，可以在侧边USB触点接上U盘启动系统
+仓库的[Releases界面](https://github.com/retro98boy/amlogic-devices/releases/tag/cainiao-cniot-core)有制作好的FIP，.bin文件用于直接刻录，.burn.img用于Amlogic USB Burning Tool线刷。该U-Boot使能了主机侧边的USB触点，可以在侧边USB触点接上U盘启动系统
 
 ### 通过dd命令
 
