@@ -1,0 +1,15 @@
+gpiochip1: GPIOs 410-495, parent: platform/pinctrl@ff634480, periphs-banks:
+ gpio-445 (                    |amlsd               ) out hi    
+ gpio-458 (                    |amlsd               ) in  hi    
+ gpio-466 (                    |lte-pon             ) out hi    
+ gpio-482 (                    |sdio_wifi           ) out hi    
+ gpio-483 (                    |sdio_wifi           ) in  hi    
+ gpio-484 (                    |?                   ) out hi    
+ gpio-485 (                    |?                   ) out hi    
+ gpio-487 (                    |power-hold          ) out hi    
+ gpio-493 (                    |bt_rfkill           ) out hi    
+ gpio-495 (                    |bt_rfkill           ) out hi    
+
+gpiochip0: GPIOs 496-511, parent: platform/pinctrl@ff800014, aobus-banks:
+ gpio-503 (                    |key                 ) in  hi    
+ gpio-507 (                    |?                   ) out hi    
