@@ -1,5 +1,7 @@
 # 固件
 
+[Armbian](https://github.com/armbian/community)
+
 ## 安装固件
 
 ### 方法一
