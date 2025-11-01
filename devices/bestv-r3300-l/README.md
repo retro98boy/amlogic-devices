@@ -152,6 +152,214 @@ root@bestv-r3300-l:~# cat /sys/class/drm/card0-Composite-1/modes
 720x480i
 ```
 
+# IR
+
+首先安装两个实用程序：
+
+```
+apt install ir-keytable evtest
+```
+
+通过ir-keytable查看rc设备：
+
+```
+root@bestv-r3300-l:~# ir-keytable 
+Found /sys/class/rc/rc0/ with:
+	Name: meson-ir
+	Driver: meson-ir
+	Default keymap: rc-empty
+	Input device: /dev/input/event1
+	LIRC device: /dev/lirc0
+	Attached BPF protocols: Operation not supported
+	Supported kernel protocols: lirc rc-5 rc-5-sz jvc sony nec sanyo mce_kbd rc-6 sharp xmp imon rc-mm 
+	Enabled kernel protocols: lirc 
+	bus: 25, vendor/product: 0000:0000, version: 0x0000
+	Repeat delay: 500 ms, repeat period: 125 ms
+```
+
+`/dev/lirc0`输出原始红外脉冲宽度，`/dev/input/event1`是rc0对应的输入事件设备
+
+分别执行`hexdump /dev/lirc0`和`hexdump /dev/input/event1`并按下遥控器按键，发现前者有数据输出而后者没有。因为需要设置正确的协议将原始红外脉冲宽度转换成扫描码
+
+查看rc0支持的协议，当前默认使用lirc：
+
+```
+root@bestv-r3300-l:~# cat /sys/class/rc/rc0/protocols 
+rc-5 nec rc-6 jvc sony rc-5-sz sanyo sharp mce_kbd xmp imon rc-mm [lirc]
+```
+
+测试使用的中国电信IPTV遥控器使用NEC协议，则：
+
+```
+echo nec > /sys/class/rc/rc0/protocols
+```
+
+然后再次执行`hexdump /dev/input/event1`并按下遥控器按键，便有数据输出了
+
+可以通过`evtest /dev/input/event1`和`ir-keytable -s rc0 -t`获得对应按键的扫描码：
+
+```
+root@bestv-r3300-l:~# evtest /dev/input/event1
+Input driver version is 1.0.1
+Input device ID: bus 0x19 vendor 0x0 product 0x0 version 0x0
+Input device name: "meson-ir"
+Supported events:
+  Event type 0 (EV_SYN)
+  Event type 1 (EV_KEY)
+  Event type 2 (EV_REL)
+    Event code 0 (REL_X)
+    Event code 1 (REL_Y)
+  Event type 4 (EV_MSC)
+    Event code 4 (MSC_SCAN)
+Key repeat handling:
+  Repeat type 20 (EV_REP)
+    Repeat code 0 (REP_DELAY)
+      Value    500
+    Repeat code 1 (REP_PERIOD)
+      Value    125
+Properties:
+  Property type 5 (INPUT_PROP_POINTING_STICK)
+Testing ... (interrupt to exit)
+Event: time 1761976717.612053, type 4 (EV_MSC), code 4 (MSC_SCAN), value b3ca
+Event: time 1761976717.612053, -------------- SYN_REPORT ------------
+
+root@bestv-r3300-l:~# ir-keytable -s rc0 -t
+Testing events. Please, press CTRL-C to abort.
+4534.972100: lirc protocol(nec): scancode = 0xb3ca
+4534.972161: event type EV_MSC(0x04): scancode = 0xb3ca
+4534.972161: event type EV_SYN(0x00).
+```
+
+在得到遥控器按键的扫描码后，可以将其映射成Linux标准输入事件键码。创建`/etc/rc_keymaps/ct.toml`，内容：
+
+```
+[[protocols]]
+name = "ct"
+protocol = "nec"
+variant = "nec32" # 可选，视协议需要
+[protocols.scancodes]
+0xb3ca = "KEY_UP"
+0xb3d2 = "KEY_DOWN"
+0xb399 = "KEY_LEFT"
+0xb3c1 = "KEY_RIGHT"
+```
+
+然后执行：
+
+```
+# 清除旧的映射表
+ir-keytable -s rc0 -c
+# 写入新建的映射表
+ir-keytable -s rc0 -w /etc/rc_keymaps/ct.toml
+
+# 也可以在/etc/rc_maps.cfg文件尾部增加一行* * ct.toml，让ir-keytable自动写入映射表，这种方式可以一次性处理多个映射表
+ir-keytable -s rc0 -a /etc/rc_maps.cfg
+```
+
+建立映射表后再用`evtest /dev/input/event1`测试：
+
+```
+root@bestv-r3300-l:~# evtest /dev/input/event1
+Input driver version is 1.0.1
+Input device ID: bus 0x19 vendor 0x0 product 0x0 version 0x0
+Input device name: "meson-ir"
+Supported events:
+  Event type 0 (EV_SYN)
+  Event type 1 (EV_KEY)
+    Event code 103 (KEY_UP)
+    Event code 105 (KEY_LEFT)
+    Event code 106 (KEY_RIGHT)
+    Event code 108 (KEY_DOWN)
+  Event type 2 (EV_REL)
+    Event code 0 (REL_X)
+    Event code 1 (REL_Y)
+  Event type 4 (EV_MSC)
+    Event code 4 (MSC_SCAN)
+Key repeat handling:
+  Repeat type 20 (EV_REP)
+    Repeat code 0 (REP_DELAY)
+      Value    500
+    Repeat code 1 (REP_PERIOD)
+      Value    125
+Properties:
+  Property type 5 (INPUT_PROP_POINTING_STICK)
+Testing ... (interrupt to exit)
+Event: time 1761977390.016092, type 4 (EV_MSC), code 4 (MSC_SCAN), value b3ca
+Event: time 1761977390.016092, type 1 (EV_KEY), code 103 (KEY_UP), value 1
+Event: time 1761977390.016092, -------------- SYN_REPORT ------------
+Event: time 1761977390.147996, type 1 (EV_KEY), code 103 (KEY_UP), value 0
+Event: time 1761977390.147996, -------------- SYN_REPORT ------------
+Event: time 1761977391.863992, type 4 (EV_MSC), code 4 (MSC_SCAN), value b3d2
+Event: time 1761977391.863992, type 1 (EV_KEY), code 108 (KEY_DOWN), value 1
+Event: time 1761977391.863992, -------------- SYN_REPORT ------------
+Event: time 1761977391.995964, type 1 (EV_KEY), code 108 (KEY_DOWN), value 0
+Event: time 1761977391.995964, -------------- SYN_REPORT ------------
+Event: time 1761977393.356046, type 4 (EV_MSC), code 4 (MSC_SCAN), value b399
+Event: time 1761977393.356046, type 1 (EV_KEY), code 105 (KEY_LEFT), value 1
+Event: time 1761977393.356046, -------------- SYN_REPORT ------------
+Event: time 1761977393.487985, type 1 (EV_KEY), code 105 (KEY_LEFT), value 0
+Event: time 1761977393.487985, -------------- SYN_REPORT ------------
+Event: time 1761977394.560053, type 4 (EV_MSC), code 4 (MSC_SCAN), value b3c1
+Event: time 1761977394.560053, type 1 (EV_KEY), code 106 (KEY_RIGHT), value 1
+Event: time 1761977394.560053, -------------- SYN_REPORT ------------
+Event: time 1761977394.691978, type 1 (EV_KEY), code 106 (KEY_RIGHT), value 0
+Event: time 1761977394.691978, -------------- SYN_REPORT ------------
+```
+
+C代码读取遥控器按键：
+
+```c
+#include <fcntl.h>
+#include <linux/input.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+int main(int argc, char *argv[]) {
+  const char *device = "/dev/input/event1";
+  int fd;
+  struct input_event ev;
+
+  fd = open(device, O_RDONLY);
+  if (fd == -1) {
+    perror("failed to open device");
+    exit(-1);
+  }
+
+  while (1) {
+    if (read(fd, &ev, sizeof(ev)) == sizeof(ev)) {
+      if (ev.type == EV_MSC && ev.code == MSC_SCAN) {
+        printf("扫描码: 0x%04x\n", ev.value);
+      } else if (ev.type == EV_KEY) {
+        printf("键码: %d, 值: %d (1=按下, 0=释放)\n", ev.code, ev.value);
+      } else if (ev.type == EV_SYN) {
+      }
+    }
+  }
+
+  close(fd);
+
+  return 0;
+}
+```
+
+```
+root@bestv-r3300-l:~# ./rc0-listen 
+扫描码: 0xb3ca
+键码: 103, 值: 1 (1=按下, 0=释放)
+键码: 103, 值: 0 (1=按下, 0=释放)
+扫描码: 0xb3d2
+键码: 108, 值: 1 (1=按下, 0=释放)
+键码: 108, 值: 0 (1=按下, 0=释放)
+扫描码: 0xb399
+键码: 105, 值: 1 (1=按下, 0=释放)
+扫描码: 0xb399
+键码: 105, 值: 0 (1=按下, 0=释放)
+扫描码: 0xb3c1
+键码: 106, 值: 1 (1=按下, 0=释放)
+键码: 106, 值: 0 (1=按下, 0=释放)
+```
+
 # 相关链接
 
 [U-Boot for Amlogic P212](https://github.com/u-boot/u-boot/blob/master/doc/board/amlogic/p212.rst)
