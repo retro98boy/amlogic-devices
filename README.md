@@ -1,3 +1,5 @@
+[Baidu XDH01A1](devices/baidu-xdh01a1/README.md)
+
 [BesTV R3300-L](devices/bestv-r3300-l/README.md)
 
 [CAINIAO CNIoT-CORE](devices/cainiao-cniot-core/README.md)

@@ -8,6 +8,8 @@
 
 外观图和主板图如下：
 
+![box](pictures/box.jpg)
+
 ![board](pictures/board.jpg)
 
 12V DC供电，Amlogic A113X SoC，128MiB DDR，128MiB NAND，AP6236 WiFi/BT模组
@@ -17,6 +19,10 @@
 主板的4 pin连接器中存在UART，所以很方便就能接出来用于调试
 
 改好UART的USB Type-A的设备如下图：
+
+![box-mod](pictures/box-mod.jpg)
+
+![board-mod](pictures/board-mod.jpg)
 
 由于该设备使用TSOP封装的NAND来启动系统，很容易找到NAND短接点：
 
@@ -39,7 +45,7 @@
 0x000006c40000-0x000008000000 : "data"
 ```
 
-在后续的操作中，一定要确保只能动boot0起始地址以后的部分，不要写、擦除前面的bootloader、tpl以及gap（里面可能存在BBT和U-Boot env），否则设备可能无法再启动。虽然有bootloader和tpl的备份，但是暂时未找到线刷回去的办法，可能只能拆NAND芯片用编程器（还不确定编程器写回是否有效）写入备份
+在后续的操作中，一定要确保只能动boot0起始地址以后的部分，不要写、擦除前面的bootloader、tpl以及gap（里面可能存在BBT和U-Boot env），否则设备可能无法再启动。虽然有bootloader和tpl的备份，但是暂时未找到线刷回去的办法，可能只能拆NAND芯片用编程器（还不确定编程器写回是否有效）写入备份。该设备还开启了安全启动，所以无法使用自制bootloader
 
 所以，执行所有命令前，应先`cat /proc/mtd`并核对命令中的mtdN，N是否正确
 
@@ -89,7 +95,7 @@ setenv bootcmd 'echo 'try boot from usb drive'; if usb start; then run try_usbdr
 
 setenv try_usbdrive_bootcmd 'for usbdevnum in 0 1 2 3; do if fatload usb ${usbdevnum} 1020000 boot.scr; then setenv devtype usb; setenv devnum $usbdevnum; autoscr 1020000; fi; done'
 
-saveenv
+saveenv && reset
 ```
 
 完成上面的设置后，设备的Type-A口插入启动U盘则从U盘启动，不插入则启动官方的系统
@@ -229,6 +235,49 @@ Writing data to block 31 at offset 0x3e0000
 Written 244 blocks containing only 0xff bytes
 Those block may be incorrectly treated as empty!
 ```
+
+# 按键
+
+```
+# 测试麦克风禁止按钮
+hexdump /dev/input/event0
+
+# 测试其他按钮
+hexdump /dev/input/event1
+```
+
+# LED
+
+```
+# 将RGB LED亮度设置成最大
+echo 255 > /sys/class/leds/rgb:/brightness
+
+# 单独设置RGB每个通道的亮度来调色
+# cat /sys/class/leds/rgb:/multi_index 
+red green blue
+# echo 128 128 0 > /sys/class/leds/rgb:/multi_intensity 
+```
+
+# 扬声器
+
+```
+# 设置扬声器音频路由
+amixer -D hw:baiduxdh01a1 cset name='FRDDR_B SINK SEL' 'OUT 1'
+amixer -D hw:baiduxdh01a1 cset name='TDMOUT_B SRC SEL' 'IN 1'
+
+# 测试扬声器
+aplay -D plughw:baiduxdh01a1,1 test.wav
+```
+
+TODO：使用TDMIN_LB回采播放的音频
+
+# 麦克风
+
+设备顶部的PCB有六个PDM麦克风焊盘，只焊接了三个
+
+![mic](pictures/mic.jpg)
+
+未测试
 
 # NAND dump记录
 
@@ -375,3 +424,9 @@ nandwrite /dev/mtd2 /tmp/bootloader
 ```
 
 再开机到自制固件，dump出来boot0，然后使用dd命令取前0x200000字节就是bootloader，最后无论是网络传输还是拔下U盘插入电脑，都能得到bootloader
+
+# 相关链接
+
+[Dumping the Amlogic A113X Bootrom](https://haxx.in/posts/dumping-the-amlogic-a113x-bootrom/)
+
+[Retreading The AMLogic A113X TrustZone Exploit Process](https://boredpentester.com/retreading-the-amlogic-a113x-trustzone-exploit-process/)
