@@ -24,7 +24,7 @@
 
 ![board-mod](pictures/board-mod.jpg)
 
-由于该设备使用TSOP封装的NAND来启动系统，很容易找到NAND短接点：
+由于该设备使用TSOP48封装的NAND来启动系统，很容易找到NAND短接点：
 
 ![nand-short](pictures/nand-short.jpg)
 
@@ -55,7 +55,7 @@
 
 PC使用USB串口模块连接主板的调试串口，波特率为115200
 
-将板子上电，发现串口终端有输出，但是无法使用按键停在U-Boot cmd，等待内核/rootfs都加载完毕，发现想登录shell需要rid。咋一看无法下手，所以尝试短接法
+将板子上电，发现串口终端有输出，但是无法使用按键停在U-Boot cmd，等待内核/rootfs都加载完毕，发现想登录shell需要rid。乍一看无法下手，所以尝试短接法
 
 将板子下电，将镊子搭在NAND短接点上但不要短接，眼睛看向串口终端
 
