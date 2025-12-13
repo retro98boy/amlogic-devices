@@ -279,7 +279,7 @@ amixer -D hw:cainiaocniotcor cset name='ACODEC Playback Volume' 255
 
 通过`alsactl info`和`aplay -l`可以得到card的驱动名和声卡名分别为`axg-sound-card`和`cainiao-cniot-core`，结合上面ucm.conf中的注释，可以将ALSA UCM配置文件放在`/usr/share/alsa/ucm2/conf.d/axg-sound-card/cainiao-cniot-core.conf`
 
-[这里](https://github.com/armbian/build/tree/main/packages/bsp/cainiao-cniot-core)存在写好的ALSA UCM文件，将其放在`/usr/share/alsa/ucm2/Amlogic/axg-sound-card`目录下，并使用`ls -sfv /usr/share/alsa/ucm2/Amlogic/axg-sound-card/cainiao-cniot-core.conf /usr/share/alsa/ucm2/conf.d/axg-sound-card/cainiao-cniot-core.conf`创建符号连接即可完成配置文件的安装
+[这里](https://github.com/armbian/build/tree/main/packages/bsp/cainiao-cniot-core)存在写好的ALSA UCM文件，将其放在`/usr/share/alsa/ucm2/Amlogic/axg-sound-card`目录下，并使用`ln -sfv /usr/share/alsa/ucm2/Amlogic/axg-sound-card/cainiao-cniot-core.conf /usr/share/alsa/ucm2/conf.d/axg-sound-card/cainiao-cniot-core.conf`创建符号连接即可完成配置文件的安装
 
 安装ALSA UCM配置文件后，在桌面环境的设置App里面便可以看到HDMI和Internal Speaker两个设备，可以随意切换，且可以同时使用
 
