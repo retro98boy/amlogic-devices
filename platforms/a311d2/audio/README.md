@@ -208,3 +208,13 @@ EE_AUDIO_DAT_PAD_CTRL4/5寄存器配置TDMIN_C的8个lane的输入PAD
 EE_AUDIO_DAT_PAD_CTRL6/7/8/9/A/B/C/D寄存器配置32个TDM PAD分别来自哪个TDMOUT的哪个lane
 
 总之每个TDM数据PAD可以很灵活的映射到不同的TDM输入或输出的任意一个lane上，这部分的驱动在`common_drivers/sound/soc/amlogic/auge/pinctrl/pctrl-audio.c`
+
+# 相关链接
+
+[VIM3 调试I2SB接口导致hdmi输出没有声音](https://forum.khadas.com/t/vim3-i2sb-hdmi/11488)
+
+[Add support of MAX98091 codec with VIM3L](https://forum.khadas.com/t/add-support-of-max98091-codec-with-vim3l/13705)
+
+[How to correctly configure audio data transfer from i2s to Android apps?](https://forum.khadas.com/t/how-to-correctly-configure-audio-data-transfer-from-i2s-to-android-apps/19605/4)
+
+[How can I use I2S pins to output audio with Ubuntu image](https://forum.khadas.com/t/how-can-i-use-i2s-pins-to-output-audio-with-ubuntu-image/6628)
