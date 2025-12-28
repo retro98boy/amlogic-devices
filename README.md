@@ -27,3 +27,5 @@
 ## 设备
 
 [CoreLab TVPro](devices/corelab-tvpro/README.md)
+
+[AOC 65T33Z](devices/aoc-65t33z/README.md)
