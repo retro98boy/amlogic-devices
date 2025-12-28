@@ -148,7 +148,7 @@ u-boot.bin.sd.bin.signed替换aml_sdc_burn.UBOOT
 
 使用参考此处[此处](../corelab-tvpro/README.md#音频)
 
-该板子和CoreLab TVPro音频方面的区别是少了一路LINE IN，多了一路I2S CODEC输出（未贴的电路不计入）。暂时不驱动I2S CODEC的情况下，完全套用CoreLab TVPro的音频配置，HDMI和LINE OUT输出正常
+该板子和CoreLab TVPro音频方面的区别是少了一路LINE IN，多了一路I2S CODEC输出（其他未贴的电路不考虑）。暂时不驱动I2S CODEC的情况下，完全套用CoreLab TVPro的音频配置，HDMI和LINE OUT输出正常
 
 ## GPU
 
