@@ -164,7 +164,7 @@ u-boot.bin.sd.bin.signed替换aml_sdc_burn.UBOOT
 
 如果板子存在运行的系统且有root权限，直接参考上文的命令将U-Boot dd到eMMC即可
 
-如果板子上运行的系统提权困难，或者不想自己编译U-Boot，直接可以使用release界面提供的U-Boot线刷包刷入。注意要使用Amlogic Burn Tool v3版本，线刷口为Micro USB。推荐使用OTG线加A to A线（断掉供电线），这样刷完U-Boot后，拔掉A to A线直接插入启动U盘。动手能力强的可以把Micro USB换成Type-A免去OTG线材
+如果板子上运行的系统提权困难，或者不想自己编译U-Boot，直接可以使用[release界面](https://github.com/retro98boy/amlogic-devices/releases/tag/aoc-65t33z)提供的U-Boot线刷包刷入。注意要使用Amlogic Burn Tool v3版本，线刷口为Micro USB。推荐使用OTG线加A to A线（断掉供电线），这样刷完U-Boot后，拔掉A to A线直接插入启动U盘。动手能力强的可以把Micro USB换成Type-A免去OTG线材
 
 注意，要U盘启动Armbian则刷入`aoc-65t33z-4g-u-boot-for-armbian-xxxx.burn.img`，要U盘启动CoreELEC则刷入`aoc-65t33z-4g-u-boot-for-coreelec-xxxx.burn.img`
 
