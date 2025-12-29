@@ -40,7 +40,11 @@
 
 # 内核
 
-暂时只能使用供应商内核，最新版本是5.15。dts在[此处](https://github.com/retro98boy/khadas-common-drivers/blob/khadas-vims-5.15.y/arch/arm64/boot/dts/amlogic/t7-a311d2-tvpro-8g.dts)
+暂时只能使用供应商内核，最新版本是5.15
+
+适用于Armbian的[dts](https://github.com/retro98boy/khadas-common-drivers)
+
+适用于CoreELEC的[dts](https://github.com/retro98boy/coreelec-common-drivers)
 
 ## 音频
 
