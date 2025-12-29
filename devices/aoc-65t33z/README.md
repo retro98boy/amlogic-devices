@@ -73,7 +73,7 @@ bash fip/mk_script.sh 65t33z /workspace/u-boot/coreelec-u-boot
 
 之所以coreelec-u-boot要分步编译而khadas-u-boot只需一条命令，是因为该[提交](https://github.com/CoreELEC/u-boot/commit/7f0145c9b759e6dda33e6beb3cdb7bd353cafe14)
 
-两种源码编译后输出都在fip/_tmp目录下，三个文件很重要`u-boot.bin.sd.bin.signed` `u-boot.bin.signed` `u-boot.bin.usb.signed`。个人猜测`u-boot.bin.usb.signed`专用于USB下载模式side load后实现线刷系统到eMMC。`u-boot.bin.sd.bin.signed`被刻录到MMC上，是实际起作用的bootloader。`u-boot.bin.usb.signed`的作用未知
+两种源码编译后输出都在fip/_tmp目录下，三个文件很重要`u-boot.bin.sd.bin.signed` `u-boot.bin.signed` `u-boot.bin.usb.signed`。个人猜测`u-boot.bin.usb.signed`专用于USB下载模式sideload后实现线刷系统到eMMC。`u-boot.bin.sd.bin.signed`被刻录到MMC上，是实际起作用的bootloader。`u-boot.bin.usb.signed`的作用未知
 
 如何将`u-boot.bin.sd.bin.signed`安装到eMMC/SD卡（复制自armbian-build/config/sources/families/meson-s4t7.conf）：
 
@@ -180,4 +180,78 @@ u-boot.bin.sd.bin.signed替换aml_sdc_burn.UBOOT
 
 选择Armbain作为PE/LiveISO是因为它更通用且能通过包管理器安装额外工具。用CoreELEC做PE/LiveISO也可以，但是想使用Netcat就无法通过包管理器来安装了
 
+# dump原机系统
 
+该设备没有SD卡槽，所以短接eMMC强制SoC从SD卡启动Armbian后再dump eMMC的方法失效
+
+尝试在原机安卓U-Boot cmd下从U盘启动Armbian再dump，结果发现原机安卓的U-Boot无法驱动U盘
+
+原机安卓有root权限，且可以驱动U盘，所以可以直接dd eMMC到U盘。但是这并不完美，因为在dd时，eMMC上的数据也会一直变化，备份出来img随机性大。且备份下来的系统也“不干净”（已经有用户数据）
+
+所以作者使用USB下载模式下sideload U-Boot再启动Armbian来dump eMMC的方法
+
+## 清理eMMC数据（非必需）
+
+打开板子的串口shell，波特率115200（原机安卓的波特率）。开机进入安卓系统后，选择恢复出厂设置，然后观察串口shell。板子会立马重启，打印U-Boot的log，然后出现安卓内核的log，这时板子在recovery中清除用户数据，等待即可
+
+清除完用户数据后，板子会再次重启并打印U-Boot的log。这时立马拔掉板子的供电，因为再运行下去，就会加载安卓内核开机进入OOBE。断电后，此时的eMMC是“干净”的（无用户数据）
+
+## 制作U-Boot sideload包
+
+解包`aoc-65t33z-4g-u-boot-for-armbian-xxxx.burn.img`，修改其中的image.cfg
+
+删除`[LIST_VERIFY]`下的所有条目，确保不会把数据刷到eMMC导致eMMC数据丢失
+
+删除`[LIST_NORMAL]`下`file="_aml_dtb.PARTITION"`这一行，否则在刷写该包时，Amlogic Burn Tool会执行eMMC初始化，同样会清除所有eMMC数据
+
+最后重新打包即可。[release界面](https://github.com/retro98boy/amlogic-devices/releases/tag/aoc-65t33z)提供制作好的U-Boot sideload包，名为`aoc-65t33z-4g-u-boot-sideload-for-armbian-xxxx.burn.img`
+
+## 启动Armbian
+
+打开板子的串口shell，波特率921600
+
+USB线连接Windows PC和板子Micro USB
+
+短接板子的USB Boot点再给板子上电
+
+Windows PC下用Amlogic Burn Tool v3“刷入”`aoc-65t33z-4g-u-boot-sideload-for-armbian-xxxx.burn.img`，由于这是个空包，只会加载可以U盘启动Armbian的U-Boot，不会向eMMC写入任何数据
+
+“刷入”成功后，拔掉Micro USB和Windows PC的连接，使用Micro USB OTG线缆接入刻录有Armbian.img的U盘
+
+在板子的串口shell中，按Ctrl-C暂停USB刷写程序，然后一直空格直至停在U-Boot cmd，最后输入boot并回车，U-Boot就会扫描U盘并从中启动Armbian
+
+## 开始dump
+
+进入Armbian shell后，就可以对eMMC为所欲为。由于整个eMMC较大，这里不使用dd的办法，使用Netcat直接将eMMC备份到Linux server并压缩
+
+在Linux server上执行：
+
+```
+nc -l -p 1234 | zstd -T0 -c | split -b 512MiB - emmc-dump.img.zst.
+```
+
+在Armbian shell中执行：
+
+```
+nc -w 3 LinuxServer的IP 1234 < /dev/mmcblk0
+```
+
+耐心等待即可。注意/dev/mmcblk0boot0也要备份
+
+[release界面](https://github.com/retro98boy/amlogic-devices/releases/tag/aoc-65t33z)提供作者设备的原机系统备份
+
+## 恢复原机系统到eMMC
+
+先参考上文通过USB启动Armbian作为PE/LiveISO
+
+在Armbian shell中执行：
+
+```
+nc -l -p 1234 > /dev/mmcblk0
+```
+
+在Linux server上执行：
+
+```
+cat emmc-dump.img.zst.* | unzstd -T0 -c | nc -w 3 Armbian的IP 1234
+```
