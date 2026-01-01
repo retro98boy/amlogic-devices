@@ -16,9 +16,19 @@ Amlogic A311D2主控，作者购买的板子都是T7版本，未见到T7C版本
 
 ## 供电
 
-![power](pictures/power.jpg)
+![main-power](pictures/main-power.jpg)
 
-在板子背面可以看到供电连接器的pin定义。接上12V供电板子就可以开机，但是USB接口无供电，所以还要将AMP_PWR接到5V（推荐购买12V转5V模块）供电
+在板子背面可以看到供电连接器的pin定义。接上12V供电板子就可以开机，但是USB接口无供电，所以还要将AMP_PWR接到 ~~5V（推荐购买12V转5V模块）~~ 12V供电
+
+作者本来给AMP_PWR提供5V供电。但是在使用Armbian时发现Type-A供电能力差，只能带U盘，USB转NVMe硬盘无法工作。CoreELEC下Type-A甚至识别不到USB设备。测量Type-A的5V波形后发现不正常：
+
+![abnormal-vbus](pictures/abnormal-vbus.jpg)
+
+所以猜测提供Type-A 5V的DC-DC存在问题，经过一顿测量，Type-A 5V的电路如下：
+
+![vbus-sch](pictures/vbus-sch.jpg)
+
+应该是MP1584EN的输入（AMP_PWR）电压于其外围配置不符。尝试将AMP_PWR修改成12V后，Type-A 5V的输出便稳定了，且USB5744 Hub在U-Boot下也正常工作了（可以从Type-A加载内核）。这说明AMP_PWR也影响着USB5744
 
 ## 调试串口
 
@@ -162,19 +172,21 @@ u-boot.bin.sd.bin.signed替换aml_sdc_burn.UBOOT
 
 该设备无SD卡槽，所以只能将U-Boot安装到eMMC
 
-该设备的USB5744 Hub在U-Boot下工作不正常，所以USB Type-A（由Hub扩展出来的）无法在U-Boot下使用。要从USB启动系统，需要通过Micro USB接口加OTG线材
+~~该设备的USB5744 Hub在U-Boot下工作不正常，所以USB Type-A（由Hub扩展出来的）无法在U-Boot下使用。要从USB启动系统，需要通过Micro USB接口加OTG线材~~
+
+要从USB启动系统，将U盘插入Type-A（有Android USB3.0字样）
 
 ## 刷入U-Boot
 
 如果板子存在运行的系统且有root权限，直接参考上文的命令将U-Boot dd到eMMC即可
 
-如果板子上运行的系统提权困难，或者不想自己编译U-Boot，直接可以使用[release界面](https://github.com/retro98boy/amlogic-devices/releases/tag/aoc-65t33z)提供的U-Boot线刷包刷入。注意要使用Amlogic Burn Tool v3版本，线刷口为Micro USB。推荐使用OTG线加A to A线（断掉供电线），这样刷完U-Boot后，拔掉A to A线直接插入启动U盘。动手能力强的可以把Micro USB换成Type-A免去OTG线材
+如果板子上运行的系统提权困难，或者不想自己编译U-Boot，直接可以使用[release界面](https://github.com/retro98boy/amlogic-devices/releases/tag/aoc-65t33z)提供的U-Boot线刷包刷入。注意要使用Amlogic Burn Tool v3版本，线刷口为Micro USB
 
 注意，要U盘启动Armbian则刷入`aoc-65t33z-4g-u-boot-for-armbian-xxxx.burn.img`，要U盘启动CoreELEC则刷入`aoc-65t33z-4g-u-boot-for-coreelec-xxxx.burn.img`
 
 ## 安装系统到U盘
 
-刷好对应的U-Boot到eMMC后，下载对应的系统镜像，解压后将.img刻录到U盘上。最后将U盘插入Micro USB再开机即可
+刷好对应的U-Boot到eMMC后，下载对应的系统镜像，解压后将.img刻录到U盘上。最后将U盘插入Type-A再开机即可
 
 ## 安装系统到eMMC
 
@@ -218,9 +230,9 @@ USB线连接Windows PC和板子Micro USB
 
 短接板子的USB Boot点再给板子上电
 
-Windows PC下用Amlogic Burn Tool v3“刷入”`aoc-65t33z-4g-u-boot-sideload-for-armbian-xxxx.burn.img`，由于这是个空包，只会加载可以U盘启动Armbian的U-Boot，不会向eMMC写入任何数据
+Windows PC下用Amlogic Burn Tool v3“刷入”`aoc-65t33z-4g-u-boot-sideload-for-armbian-xxxx.burn.img`，由于这是个空包，只会sideload可以U盘启动Armbian的U-Boot到RAM，不会向eMMC写入任何数据
 
-“刷入”成功后，拔掉Micro USB和Windows PC的连接，使用Micro USB OTG线缆接入刻录有Armbian.img的U盘
+“刷入”成功后，拔掉Micro USB和Windows PC的连接，将刻录有Armbian.img的U盘插到板子的Type-A
 
 在板子的串口shell中，按Ctrl-C暂停USB刷写程序，然后一直空格直至停在U-Boot cmd，最后输入boot并回车，U-Boot就会扫描U盘并从中启动Armbian
 
