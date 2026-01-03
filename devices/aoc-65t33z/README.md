@@ -14,6 +14,10 @@ Amlogic A311D2主控，作者购买的板子都是T7版本，未见到T7C版本
 
 ![top-overview](pictures/top-overview.jpg)
 
+官方介绍[页面](https://www.aocdisplay.com.cn/sku-3085)，从图片中可以确定，只有4+32的版本
+
+![spec](pictures/spec.png)
+
 ## 供电
 
 ![main-power](pictures/main-power.jpg)
