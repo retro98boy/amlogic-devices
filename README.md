@@ -6,7 +6,7 @@
 
 [Baidu XDH01A1](devices/baidu-xdh01a1/README.md)
 
-# A311D
+# A311D/S922X
 
 [CAINIAO CNIoT-CORE](devices/cainiao-cniot-core/README.md)
 
