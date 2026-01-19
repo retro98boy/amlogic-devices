@@ -2,6 +2,8 @@
 
 [Armbian](https://github.com/armbian/community)
 
+[Batocera](https://github.com/retro98boy/batocera.linux)
+
 ## 安装固件
 
 ### 方法一
