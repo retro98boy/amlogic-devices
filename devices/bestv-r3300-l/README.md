@@ -8,7 +8,7 @@
 
 ### 方法一
 
-在设备能启动且有root权限的情况下，将Releases界面提供的主线u-boot.bin刻录到eMMC上：
+在设备能启动且有root权限的情况下，将[Releases界面](https://github.com/retro98boy/amlogic-devices/releases/tag/bestv-r3300-l)提供的主线u-boot.bin刻录到eMMC上：
 
 ```
 # 如果是安卓系统则改为/dev/block/mmcblkN
@@ -57,7 +57,7 @@ Amlogic S905L-B SoC
 
 一个USB 2.0 Type-A，一个USB 2.0 Micro USB OTG
 
-SD卡槽
+microSD卡槽
 
 百兆网口和RTL8189FTV WiFi
 
@@ -117,7 +117,7 @@ Armbian固件使用ALSA UCM来配置音频路由，所以不需要像上面手�
 
 对于桌面环境，直接在设置App里面选择音频设备即可
 
-对于CLI，执行`alsactl init && alsaucm set _verb "HiFi" set _enadev "HDMI"`或者`alsactl init && alsaucm set _verb "HiFi" set _enadev "Lineout"`即可
+对于CLI，执行`alsactl init hw:S905XP212 && alsaucm -c hw:S905XP212 set _verb "HiFi" set _enadev "HDMI"`或者`alsactl init hw:S905XP212 && alsaucm -c hw:S905XP212 set _verb "HiFi" set _enadev "Lineout"`即可
 
 # CVBS
 
