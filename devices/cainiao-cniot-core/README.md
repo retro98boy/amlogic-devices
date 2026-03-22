@@ -150,7 +150,9 @@ gxlimg \
 
 ## 音频
 
-A311D的音频配置十分灵活，整个音频路径可见datasheet中的**Audio Path**章节
+如图，A311D的音频路径十分灵活
+
+![audio-diagram](pictures/audio-diagram.png)
 
 主线内核使用axg-sound-card驱动，在用户层使用amixer/alsamixer配置好音频通路即可播放音乐
 
@@ -158,13 +160,13 @@ A311D的音频配置十分灵活，整个音频路径可见datasheet中的**Audi
 
 ```
 **** List of PLAYBACK Hardware Devices ****
-card 0: cainiaocniotcor [cainiao-cniot-core], device 0: fe.dai-link-0 (*) []
+card 0: cniotcore [cniot-core], device 0: fe.dai-link-0 (*) []
   Subdevices: 0/1
   Subdevice #0: subdevice #0
-card 0: cainiaocniotcor [cainiao-cniot-core], device 1: fe.dai-link-1 (*) []
+card 0: cniotcore [cniot-core], device 1: fe.dai-link-1 (*) []
   Subdevices: 0/1
   Subdevice #0: subdevice #0
-card 0: cainiaocniotcor [cainiao-cniot-core], device 2: fe.dai-link-2 (*) []
+card 0: cniotcore [cniot-core], device 2: fe.dai-link-2 (*) []
   Subdevices: 1/1
   Subdevice #0: subdevice #0
 ```
@@ -172,96 +174,96 @@ card 0: cainiaocniotcor [cainiao-cniot-core], device 2: fe.dai-link-2 (*) []
 将音频路由恢复到关闭状态：
 
 ```
-amixer -D hw:cainiaocniotcor cset name='ACODEC Playback Volume' 0
-amixer -D hw:cainiaocniotcor cset name='ACODEC Left DAC Sel' 'Left'
-amixer -D hw:cainiaocniotcor cset name='ACODEC Mute Ramp Switch' off
-amixer -D hw:cainiaocniotcor cset name='ACODEC Playback Channel Mode' 'Stereo'
-amixer -D hw:cainiaocniotcor cset name='ACODEC Ramp Rate' 'Fast'
-amixer -D hw:cainiaocniotcor cset name='ACODEC Right DAC Sel' 'Right'
-amixer -D hw:cainiaocniotcor cset name='ACODEC Unmute Ramp Switch' off
-amixer -D hw:cainiaocniotcor cset name='ACODEC Volume Ramp Switch' off
-amixer -D hw:cainiaocniotcor cset name='FRDDR_A SINK 1 SEL' 'OUT 0'
-amixer -D hw:cainiaocniotcor cset name='FRDDR_A SINK 2 SEL' 'OUT 0'
-amixer -D hw:cainiaocniotcor cset name='FRDDR_A SINK 3 SEL' 'OUT 0'
-amixer -D hw:cainiaocniotcor cset name='FRDDR_A SRC 1 EN Switch' off
-amixer -D hw:cainiaocniotcor cset name='FRDDR_A SRC 2 EN Switch' off
-amixer -D hw:cainiaocniotcor cset name='FRDDR_A SRC 3 EN Switch' off
-amixer -D hw:cainiaocniotcor cset name='FRDDR_B SINK 1 SEL' 'OUT 0'
-amixer -D hw:cainiaocniotcor cset name='FRDDR_B SINK 2 SEL' 'OUT 0'
-amixer -D hw:cainiaocniotcor cset name='FRDDR_B SINK 3 SEL' 'OUT 0'
-amixer -D hw:cainiaocniotcor cset name='FRDDR_B SRC 1 EN Switch' off
-amixer -D hw:cainiaocniotcor cset name='FRDDR_B SRC 2 EN Switch' off
-amixer -D hw:cainiaocniotcor cset name='FRDDR_B SRC 3 EN Switch' off
-amixer -D hw:cainiaocniotcor cset name='FRDDR_C SINK 1 SEL' 'OUT 0'
-amixer -D hw:cainiaocniotcor cset name='FRDDR_C SINK 2 SEL' 'OUT 0'
-amixer -D hw:cainiaocniotcor cset name='FRDDR_C SINK 3 SEL' 'OUT 0'
-amixer -D hw:cainiaocniotcor cset name='FRDDR_C SRC 1 EN Switch' off
-amixer -D hw:cainiaocniotcor cset name='FRDDR_C SRC 2 EN Switch' off
-amixer -D hw:cainiaocniotcor cset name='FRDDR_C SRC 3 EN Switch' off
-amixer -D hw:cainiaocniotcor cset name='TDMOUT_A Gain Enable Switch' off
-amixer -D hw:cainiaocniotcor cset name='TDMOUT_A Lane 0 Volume' 0
-amixer -D hw:cainiaocniotcor cset name='TDMOUT_A Lane 1 Volume' 0
-amixer -D hw:cainiaocniotcor cset name='TDMOUT_A Lane 2 Volume' 0
-amixer -D hw:cainiaocniotcor cset name='TDMOUT_A Lane 3 Volume' 0
-amixer -D hw:cainiaocniotcor cset name='TDMOUT_A SRC SEL' 'IN 0'
-amixer -D hw:cainiaocniotcor cset name='TDMOUT_B Gain Enable Switch' off
-amixer -D hw:cainiaocniotcor cset name='TDMOUT_B Lane 0 Volume' 0
-amixer -D hw:cainiaocniotcor cset name='TDMOUT_B Lane 1 Volume' 0
-amixer -D hw:cainiaocniotcor cset name='TDMOUT_B Lane 2 Volume' 0
-amixer -D hw:cainiaocniotcor cset name='TDMOUT_B Lane 3 Volume' 0
-amixer -D hw:cainiaocniotcor cset name='TDMOUT_B SRC SEL' 'IN 0'
-amixer -D hw:cainiaocniotcor cset name='TOACODEC Lane Select' 0
-amixer -D hw:cainiaocniotcor cset name='TOACODEC OUT EN Switch' off
-amixer -D hw:cainiaocniotcor cset name='TOACODEC SRC' 'I2S A'
-amixer -D hw:cainiaocniotcor cset name='TOHDMITX Switch' off
-amixer -D hw:cainiaocniotcor cset name='TOHDMITX I2S SRC' 'I2S A'
-amixer -D hw:cainiaocniotcor cset name='TOHDMITX SPDIF SRC' 'SPDIF A'
+amixer -D hw:cniotcore cset name='ACODEC Playback Volume' 0
+amixer -D hw:cniotcore cset name='ACODEC Left DAC Sel' 'Left'
+amixer -D hw:cniotcore cset name='ACODEC Mute Ramp Switch' off
+amixer -D hw:cniotcore cset name='ACODEC Playback Channel Mode' 'Stereo'
+amixer -D hw:cniotcore cset name='ACODEC Ramp Rate' 'Fast'
+amixer -D hw:cniotcore cset name='ACODEC Right DAC Sel' 'Right'
+amixer -D hw:cniotcore cset name='ACODEC Unmute Ramp Switch' off
+amixer -D hw:cniotcore cset name='ACODEC Volume Ramp Switch' off
+amixer -D hw:cniotcore cset name='FRDDR_A SINK 1 SEL' 'OUT 0'
+amixer -D hw:cniotcore cset name='FRDDR_A SINK 2 SEL' 'OUT 0'
+amixer -D hw:cniotcore cset name='FRDDR_A SINK 3 SEL' 'OUT 0'
+amixer -D hw:cniotcore cset name='FRDDR_A SRC 1 EN Switch' off
+amixer -D hw:cniotcore cset name='FRDDR_A SRC 2 EN Switch' off
+amixer -D hw:cniotcore cset name='FRDDR_A SRC 3 EN Switch' off
+amixer -D hw:cniotcore cset name='FRDDR_B SINK 1 SEL' 'OUT 0'
+amixer -D hw:cniotcore cset name='FRDDR_B SINK 2 SEL' 'OUT 0'
+amixer -D hw:cniotcore cset name='FRDDR_B SINK 3 SEL' 'OUT 0'
+amixer -D hw:cniotcore cset name='FRDDR_B SRC 1 EN Switch' off
+amixer -D hw:cniotcore cset name='FRDDR_B SRC 2 EN Switch' off
+amixer -D hw:cniotcore cset name='FRDDR_B SRC 3 EN Switch' off
+amixer -D hw:cniotcore cset name='FRDDR_C SINK 1 SEL' 'OUT 0'
+amixer -D hw:cniotcore cset name='FRDDR_C SINK 2 SEL' 'OUT 0'
+amixer -D hw:cniotcore cset name='FRDDR_C SINK 3 SEL' 'OUT 0'
+amixer -D hw:cniotcore cset name='FRDDR_C SRC 1 EN Switch' off
+amixer -D hw:cniotcore cset name='FRDDR_C SRC 2 EN Switch' off
+amixer -D hw:cniotcore cset name='FRDDR_C SRC 3 EN Switch' off
+amixer -D hw:cniotcore cset name='TDMOUT_A Gain Enable Switch' off
+amixer -D hw:cniotcore cset name='TDMOUT_A Lane 0 Volume' 0
+amixer -D hw:cniotcore cset name='TDMOUT_A Lane 1 Volume' 0
+amixer -D hw:cniotcore cset name='TDMOUT_A Lane 2 Volume' 0
+amixer -D hw:cniotcore cset name='TDMOUT_A Lane 3 Volume' 0
+amixer -D hw:cniotcore cset name='TDMOUT_A SRC SEL' 'IN 0'
+amixer -D hw:cniotcore cset name='TDMOUT_B Gain Enable Switch' off
+amixer -D hw:cniotcore cset name='TDMOUT_B Lane 0 Volume' 0
+amixer -D hw:cniotcore cset name='TDMOUT_B Lane 1 Volume' 0
+amixer -D hw:cniotcore cset name='TDMOUT_B Lane 2 Volume' 0
+amixer -D hw:cniotcore cset name='TDMOUT_B Lane 3 Volume' 0
+amixer -D hw:cniotcore cset name='TDMOUT_B SRC SEL' 'IN 0'
+amixer -D hw:cniotcore cset name='TOACODEC Lane Select' 0
+amixer -D hw:cniotcore cset name='TOACODEC OUT EN Switch' off
+amixer -D hw:cniotcore cset name='TOACODEC SRC' 'I2S A'
+amixer -D hw:cniotcore cset name='TOHDMITX Switch' off
+amixer -D hw:cniotcore cset name='TOHDMITX I2S SRC' 'I2S A'
+amixer -D hw:cniotcore cset name='TOHDMITX SPDIF SRC' 'SPDIF A'
 ```
 
 设置FRDDR_A到HDMI的音频路由：
 
 ```
 # FRDDR_A -> TDMOUT_A -> TOHDMITX -> HDMI
-amixer -D hw:cainiaocniotcor cset name='FRDDR_A SINK 1 SEL' 'OUT 0'
-amixer -D hw:cainiaocniotcor cset name='FRDDR_A SRC 1 EN Switch' on
-amixer -D hw:cainiaocniotcor cset name='TDMOUT_A SRC SEL' 'IN 0'
-amixer -D hw:cainiaocniotcor cset name='TOHDMITX Switch' on
-amixer -D hw:cainiaocniotcor cset name='TOHDMITX I2S SRC' 'I2S A'
+amixer -D hw:cniotcore cset name='FRDDR_A SINK 1 SEL' 'OUT 0'
+amixer -D hw:cniotcore cset name='FRDDR_A SRC 1 EN Switch' on
+amixer -D hw:cniotcore cset name='TDMOUT_A SRC SEL' 'IN 0'
+amixer -D hw:cniotcore cset name='TOHDMITX Switch' on
+amixer -D hw:cniotcore cset name='TOHDMITX I2S SRC' 'I2S A'
 ```
 
-此时可以通过`aplay -D plughw:cainiaocniotcor,0 /usr/share/sounds/alsa/Front_Center.wav`向HDMI播放声音
+此时可以通过`aplay -D plughw:cniotcore,0 /usr/share/sounds/alsa/Front_Center.wav`向HDMI播放声音
 
 设置FRDDR_B到内置扬声器的音频路由：
 
 ```
 # FRDDR_B -> TDMOUT_B -> TOACODEC -> ACODEC -> Internal Speaker
-amixer -D hw:cainiaocniotcor cset name='FRDDR_B SINK 1 SEL' 'OUT 1'
-amixer -D hw:cainiaocniotcor cset name='FRDDR_B SRC 1 EN Switch' on
-amixer -D hw:cainiaocniotcor cset name='TDMOUT_B SRC SEL' 'IN 1'
-amixer -D hw:cainiaocniotcor cset name='TOACODEC Lane Select' 0
-amixer -D hw:cainiaocniotcor cset name='TOACODEC OUT EN Switch' on
-amixer -D hw:cainiaocniotcor cset name='TOACODEC SRC' 'I2S B'
-amixer -D hw:cainiaocniotcor cset name='ACODEC Playback Volume' 255
+amixer -D hw:cniotcore cset name='FRDDR_B SINK 1 SEL' 'OUT 1'
+amixer -D hw:cniotcore cset name='FRDDR_B SRC 1 EN Switch' on
+amixer -D hw:cniotcore cset name='TDMOUT_B SRC SEL' 'IN 1'
+amixer -D hw:cniotcore cset name='TOACODEC Lane Select' 0
+amixer -D hw:cniotcore cset name='TOACODEC OUT EN Switch' on
+amixer -D hw:cniotcore cset name='TOACODEC SRC' 'I2S B'
+amixer -D hw:cniotcore cset name='ACODEC Playback Volume' 255
 ```
 
-此时可以通过`aplay -D plughw:cainiaocniotcor,1 /usr/share/sounds/alsa/Front_Center.wav`向内置扬声器播放声音，且与上面的HDMI音频通路互不影响，可以同时播放
+此时可以通过`aplay -D plughw:cniotcore,1 /usr/share/sounds/alsa/Front_Center.wav`向内置扬声器播放声音，且与上面的HDMI音频通路互不影响，可以同时播放
 
 也可以设置FRDDR_A到HDMI和内置扬声器的音频路由：
 
 ```
 # FRDDR_A -> TDMOUT_A -> TOHDMITX and TOACODEC -> HDMI and Internal Speaker
-amixer -D hw:cainiaocniotcor cset name='FRDDR_A SINK 1 SEL' 'OUT 0'
-amixer -D hw:cainiaocniotcor cset name='FRDDR_A SRC 1 EN Switch' on
-amixer -D hw:cainiaocniotcor cset name='TDMOUT_A SRC SEL' 'IN 0'
-amixer -D hw:cainiaocniotcor cset name='TOHDMITX Switch' on
-amixer -D hw:cainiaocniotcor cset name='TOHDMITX I2S SRC' 'I2S A'
-amixer -D hw:cainiaocniotcor cset name='TOACODEC Lane Select' 0
-amixer -D hw:cainiaocniotcor cset name='TOACODEC OUT EN Switch' on
-amixer -D hw:cainiaocniotcor cset name='TOACODEC SRC' 'I2S A'
-amixer -D hw:cainiaocniotcor cset name='ACODEC Playback Volume' 255
+amixer -D hw:cniotcore cset name='FRDDR_A SINK 1 SEL' 'OUT 0'
+amixer -D hw:cniotcore cset name='FRDDR_A SRC 1 EN Switch' on
+amixer -D hw:cniotcore cset name='TDMOUT_A SRC SEL' 'IN 0'
+amixer -D hw:cniotcore cset name='TOHDMITX Switch' on
+amixer -D hw:cniotcore cset name='TOHDMITX I2S SRC' 'I2S A'
+amixer -D hw:cniotcore cset name='TOACODEC Lane Select' 0
+amixer -D hw:cniotcore cset name='TOACODEC OUT EN Switch' on
+amixer -D hw:cniotcore cset name='TOACODEC SRC' 'I2S A'
+amixer -D hw:cniotcore cset name='ACODEC Playback Volume' 255
 ```
 
-这样执行`aplay -D plughw:cainiaocniotcor,0 /usr/share/sounds/alsa/Front_Center.wav`，HDMI和内置扬声器会同时播放声音
+这样执行`aplay -D plughw:cniotcore,0 /usr/share/sounds/alsa/Front_Center.wav`，HDMI和内置扬声器会同时播放声音
 
 如果安装了桌面环境，会发现在系统设置里面往往只有一个模拟输出设备。因为该设备只有一张card，PipeWire/Pulse Audio并不会识别card的device。这时可以通过ALSA UCM来管理声音实例和音频路由
 
@@ -277,13 +279,13 @@ amixer -D hw:cainiaocniotcor cset name='ACODEC Playback Volume' 255
 #   ucm2/${CardDriver}/${CardDriver}.conf (obsolete)
 ```
 
-通过`alsactl info`可以得到card的driver_name和longname分别为`axg-sound-card`和`cainiao-cniot-core`，结合上面ucm.conf中的注释，可以将ALSA UCM配置文件放在`/usr/share/alsa/ucm2/conf.d/axg-sound-card/cainiao-cniot-core.conf`
+通过`alsactl info`可以得到card的driver_name和longname分别为`axg-sound-card`和`cniot-core`，结合上面ucm.conf中的注释，可以将ALSA UCM配置文件放在`/usr/share/alsa/ucm2/conf.d/axg-sound-card/cniot-core.conf`
 
-[这里](https://github.com/armbian/build/tree/main/packages/bsp/cainiao-cniot-core)存在写好的ALSA UCM文件，将其放在`/usr/share/alsa/ucm2/Amlogic/axg-sound-card`目录下，并使用`ln -sfv /usr/share/alsa/ucm2/Amlogic/axg-sound-card/cainiao-cniot-core.conf /usr/share/alsa/ucm2/conf.d/axg-sound-card/cainiao-cniot-core.conf`创建符号连接即可完成配置文件的安装
+[这里](https://github.com/armbian/build/tree/main/packages/bsp/cainiao-cniot-core)存在写好的ALSA UCM文件，将其放在`/usr/share/alsa/ucm2/Amlogic/axg-sound-card`目录下，并使用`ln -sfv /usr/share/alsa/ucm2/Amlogic/axg-sound-card/cniot-core.conf /usr/share/alsa/ucm2/conf.d/axg-sound-card/cniot-core.conf`创建符号连接即可完成配置文件的安装
 
 安装ALSA UCM配置文件后，在桌面环境的设置App里面便可以看到HDMI和Internal Speaker两个设备，可以随意切换，且可以同时使用
 
-如果要在CLI下使用ALSA UCM打开音频通路，可执行`alsactl init && alsaucm set _verb "HiFi" set _enadev "HDMI" set _enadev "Speaker"`
+如果要在CLI下使用ALSA UCM打开音频通路，可执行`alsactl init hw:cniotcore && alsaucm -c hw:cniotcore set _verb "HiFi" set _enadev "HDMI" set _enadev "Speaker"`
 
 ## 呼吸灯
 
@@ -302,6 +304,16 @@ aarch64-linux-gnu-gcc --static -o ws2812-static-arm64 ws2812.c -lm
 ## NPU
 
 参考[此处](https://github.com/armbian/build/pull/8689)驱动并测试NPU
+
+目前比较出名的可以调用该NPU的应用软件为frigate：
+
+https://github.com/blakeblackshear/frigate/discussions/20134
+
+https://github.com/blakeblackshear/frigate/pull/18310
+
+打开etnaviv驱动可能对桌面环境存在影响：
+
+https://github.com/armbian/build/issues/9525#issuecomment-4067218966
 
 # 安装系统
 
@@ -455,6 +467,14 @@ mmc dev 1 && run mmcscript
 ```
 
 最后重启此设备即可
+
+# 救援系统
+
+该设备的eMMC短接点和调试串口点位隐藏的很深。不仅要拆出PCB，还要取下散热片才能访问这些点位。将Armbian/Batocera这种使用主线U-Boot的系统写入eMMC后，一旦在后续的使用过程中不小心破坏了内核/rootfs：内核卡死、rootfs关键文件损坏或者直接忘记登录密码。就只能拆机串口U-Boot cmd救援，拆机短接重刷或者HDMI神器重刷。这是因为U-Boot中eMMC加载优先级高于USB，即使重启设备也会去加载eMMC上损坏的内核。比较麻烦
+
+作者移植的主线U-Boot提供一种快速救援eMMC上系统/数据的途径: 先按住设备的开机键再上电，维持15s后再松手，U-Boot就只会从U盘加载内核启动。所以可以提前制作一个Armbian/Batocera U盘，用这种方式强迫U-Boot加载U盘上的内核并启动系统，然后救援eMMC上的系统和数据。推荐U盘上的系统和写入eMMC的系统不要使用同一个版本，否则可能会存在UUID冲突
+
+这种机制还提供了一个玩法：将Armbian写入eMMC平时使用，按开机键再上电则启动U盘Batocera来玩游戏
 
 # USB下载模式刻录eMMC
 
