@@ -54,3 +54,7 @@ eMMC短接点
 # 安装系统
 
 参考[此处](../cainiao-cniot-core/README.md)的**安装系统**章节
+
+# 救援系统
+
+见[此处](../cainiao-cniot-core/README.md#救援系统)
