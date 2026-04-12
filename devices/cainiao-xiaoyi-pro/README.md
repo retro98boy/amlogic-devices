@@ -126,3 +126,7 @@ dd if=reserved.PARTITION of=_aml_dtb.PARTITION bs=512 skip=8192 count=512
 调试串口：
 
 ![debug-uart](pictures/debug-uart.jpg)
+
+天线：
+
+![ant](pictures/ant.jpg)
