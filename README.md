@@ -14,6 +14,8 @@
 
 [CAINIAO XiaoYi Pro](devices/cainiao-xiaoyi-pro/README.md)
 
+[GOODMOBI A02](devices/goodmobi-a02/README.md)
+
 [LIONTRON K-A311D](devices/liontron-k-a311d/README.md)
 
 [OneThing Cloud OES](https://github.com/retro98boy/onethingcloud-oes-linux)
