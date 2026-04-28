@@ -4,6 +4,8 @@
 
 [Batocera](https://github.com/retro98boy/batocera.linux)
 
+**注意**：对于开启了安全启动的设备，无法直接使用这些固件，只能自行研究如何通过厂家U-Boot来引导
+
 # 硬件
 
 菜鸟物流LEMO小C，Amlogic A311D SoC，4 GB DDR，16 GB eMMC，三个USB 2.0 Type-A，一个USB 3.2 Gen1 Type-A，千兆网口和RTL8821CS WiFi/BT
@@ -18,7 +20,13 @@ eMMC短接点
 
 ![emmc-short](pictures/emmc-short.jpg)
 
+> 该设备存在不同批次，有概率买到开启安全启动的设备。如何判断自己的设备是否开启了安全启动请参考[这里](https://github.com/retro98boy/onethingcloud-oes-linux?tab=readme-ov-file#%E5%AE%89%E5%85%A8%E5%90%AF%E5%8A%A8)
+>
+> 如果自己的设备开启了安全启动，就只能使用厂商的U-Boot来引导系统，且在玩机前一定要备份mmcblkNboot0/1和eMMC全盘
+
 # 主线U-Boot
+
+**注意**：不适用于开启了安全启动的设备
 
 在[retro98boy/armbian-build](https://github.com/retro98boy/armbian-build)仓库搜索cainiao-lemo-xiaoc即可找到添加该设备支持的U-Boot补丁
 
