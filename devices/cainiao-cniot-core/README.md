@@ -1,6 +1,6 @@
 # 固件
 
-[Armbian](https://github.com/armbian/community)
+[Armbian](https://armbian.cn/boards/cainiao-cniot-core)
 
 [Batocera](https://github.com/retro98boy/batocera.linux)
 
